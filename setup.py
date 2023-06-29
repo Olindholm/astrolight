@@ -34,4 +34,8 @@ setup(
         "flake8": flake8_deps,
         "dev": dev_deps,
     },
+    # Entrypoints
+    entry_points={
+        "console_scripts": ["astrolight=astrolight.__main__:main"],
+    },
 )
