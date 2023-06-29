@@ -74,6 +74,6 @@ jobs:
           platforms: |
            linux/amd64
            linux/arm64
-          push: false
+          push: true
           tags: |
             olindholm/astrolight:${{ needs.version.outputs.version }}
