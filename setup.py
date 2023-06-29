@@ -3,6 +3,9 @@ from setuptools import setup
 
 deps = [
     "PyYAML",
+    "pydantic",
+    "suntime",
+    "ewelink~=0.2",
 ]
 test_deps = ["pytest>=7", "pytest-asyncio", "pytest-cov"]
 black_deps = ["black==22.8.0"]
@@ -23,8 +26,6 @@ setup(
     # General
     name="astrolight",
     version=(version if version else "0+dev"),
-    # Package data (files)
-    package_data={"": ["py.typed"]},
     # Dependencies
     python_requires=">=3.9",
     install_requires=deps,
