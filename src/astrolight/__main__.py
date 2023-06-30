@@ -37,8 +37,8 @@ async def amain() -> None:
 
     interval: float = args.interval / time_multiplier
 
-    app = App(config, get_time_func)
-    await app.run(interval)
+    async with App(config, get_time_func) as app:
+        await app.run(interval)
 
 
 def main() -> None:

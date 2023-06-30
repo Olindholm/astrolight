@@ -1,6 +1,8 @@
 import asyncio
 import logging
 from datetime import datetime
+from traceback import TracebackException
+from types import TracebackType
 from typing import Callable
 
 from .config import Config
@@ -20,6 +22,20 @@ class App:
 
         logging.info("Initial states are assumed to be correct.")
         self._previous_light_states = self._light_states(self.get_time_func())
+
+    async def __aenter__(self) -> "App":
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: Exception,
+        exc_val: TracebackException,
+        traceback: TracebackType,
+    ) -> None:
+        await self.close()
+
+    async def close(self) -> None:
+        await asyncio.wait([connector.close() for connector in self._connectors])
 
     @property
     def lights(self) -> set[str]:
