@@ -5,6 +5,7 @@ from traceback import TracebackException
 from types import TracebackType
 from typing import Callable
 
+from .account_connector import Connector
 from .config import Config
 
 
@@ -69,9 +70,7 @@ class App:
         logging.info(f"The (changed)  light states are:  {changed_light_states}")
 
         for light, state in changed_light_states.items():
-            logging.info(f"Turning {'on' if state else 'off'} the {light} light.")
-            for connector in self._connectors:
-                await connector.set_light_state(light, state)
+            await self._set_light_state(light, state)
 
         # Finally, update previous light states
         self._previous_light_states = current_light_states
@@ -90,3 +89,28 @@ class App:
                     light_states[light] = True
 
         return light_states
+
+    async def _set_light_state(self, light: str, state: bool) -> None:
+        logging.info(f"Turning {'on' if state else 'off'} the {light} light.")
+
+        async def try_set_light_state(connector: Connector, light: str, state: bool) -> None:
+            errors = []
+
+            for i in range(5):
+                try:
+                    await connector.set_light_state(light, state)
+                    return
+                except Exception as e:
+                    errors.append(e)
+
+            logging.error(
+                "\n".join(
+                    [
+                        f"Failed to turn {'on' if state else 'off'} the {light} light.",
+                        f"Errors: {errors}",
+                    ]
+                )
+            )
+
+        for connector in self._connectors:
+            await try_set_light_state(connector, light, state)
