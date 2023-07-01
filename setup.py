@@ -3,7 +3,7 @@ from setuptools import setup
 
 deps = [
     "PyYAML",
-    "pydantic",
+    "pydantic<2",
     "suntime",
     "ewelink~=0.2",
 ]
